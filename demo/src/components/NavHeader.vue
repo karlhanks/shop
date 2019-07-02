@@ -1,6 +1,6 @@
 <template>
- <div class="NavHeader">
-     <header class="header">
+  <div class="NavHeader">
+    <header class="header">
       <svg
         style="position: absolute; width: 0; height: 0; overflow: hidden;"
         version="1.1"
@@ -50,14 +50,14 @@
       <div class="navbar">
         <div class="navbar-left-container">
           <a href="/">
-            <img class="navbar-brand-logo" src="../static/logo.png" />
+            <img class="navbar-brand-logo" src="../static/logo.png" style="width:286px;height:55px"/>
           </a>
         </div>
         <div class="navbar-right-container" style="display: flex;">
           <div class="navbar-menu-container">
             <!--<a href="/" class="navbar-link">我的账户</a>-->
             <span class="navbar-link"></span>
-            <a href="javascript:void(0)" class="navbar-link" >登录</a>
+            <a href="javascript:void(0)" class="navbar-link" @click="form.isLoginShowFlag=true">登录</a>
             <a href="javascript:void(0)" class="navbar-link">退出</a>
             <div class="navbar-cart-container">
               <span class="navbar-cart-count"></span>
@@ -70,15 +70,93 @@
           </div>
         </div>
       </div>
+      <!-- 是否显示登录遮罩 -->
+      <modal v-bind:isMdShow="form.isLoginShowFlag" @close="closeModal">
+        <div slot="title">
+          <div class="md-title">登录</div>
+        </div>
+        <div slot="message">
+          <div class="error-wrap">
+            <span class="error error-show" v-show="form.error">{{msg}}</span>
+          </div>
+          <ul>
+            <li class="regi_form_input">
+              <i class="icon IconPeople"></i>
+              <input
+                type="text"
+                v-model="form.username"
+                class="regi_login_input regi_login_input_left"
+                placeholder="用户名"
+                data-type="loginname"
+              />
+            </li>
+            <li class="regi_form_input noMargin">
+              <i class="icon IconPwd"></i>
+              <input
+                type="password"
+                v-model="form.password"
+                class="regi_login_input regi_login_input_left login-input-no input_text"
+                placeholder="密码"
+                @keyup.enter="login"
+              />
+            </li>
+          </ul>
+        </div>
+        <div slot="btnGroup">
+          <a href="javascript:;" class="btn-login" @click="login">登 录</a>
+        </div>
+      </modal>
+      <!-- /是否显示登录遮罩 -->
     </header>
- </div>
+  </div>
 </template>
  
 <script>
+import "../assets/css/base.css";
+import "../assets/css/product.css";
+
+import NavHeader from "@/components/NavHeader";
+import NavFooter from "@/components/NavFooter";
+import NavBread from "@/components/NavBread";
+import Modal from "@/components/Modal";
+
 export default {
-}
+  //数据模型（M）
+  data() {
+    return {
+      // testMdShow: true
+      //登录遮罩相关数据
+      form: {
+        username: "",
+        password: "",
+        error: true, //错误提示
+        isLoginShowFlag: false //是否显示登录遮罩
+      },
+      msg:'请输入账号密码'
+    };
+  },
+  //定义方法
+  methods: {
+    //登录数据处理
+    login() {
+      alert("待完成");
+    },
+    //关闭遮罩组件
+    closeModal() {
+      //this.testMdShow = false;         //更改data中的testMdShow键
+      this.form.isLoginShowFlag = false; //关闭登录遮罩
+    }
+  },
+  //声明组件
+  components: {
+    NavHeader,
+    NavFooter,
+    NavBread,
+    Modal
+  }
+};
 </script>
  
 <style scoped >
- @import url('../assets/css/header.css');
+@import url("../assets/css/header.css");
 </style>
