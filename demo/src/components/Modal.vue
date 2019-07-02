@@ -4,15 +4,16 @@
         <div class="md-modal-inner">
           <!-- 弹框关闭 -->
           <div class="md-top">
+            <slot name="title"></slot>
             <button class="md-close" @click="closeModal">Close</button>
           </div>
           <!-- 弹框内数据 -->
           <div class="md-content">
             <div class="confirm-tips">
-              数据1
+              <slot name="message"></slot>
             </div>
             <div class="btn-wrap">
-                <a class="btn">数据2</a>
+                <slot name="btnGroup"></slot>
             </div>
           </div>
         </div>

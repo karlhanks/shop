@@ -111,7 +111,7 @@
         </div>
       </div>
     </div>
-    <Modal :isMdShow='testMdShow' @close='closeModal'></Modal>
+    <!-- <Modal :isMdShow='testMdShow' @close='closeModal'></Modal> -->
     <NavFooter></NavFooter>
   </div>
 </template>
