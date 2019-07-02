@@ -111,6 +111,7 @@
         </div>
       </div>
     </div>
+    <Modal :isMdShow='testMdShow' @close='closeModal'></Modal>
     <NavFooter></NavFooter>
   </div>
 </template>
@@ -123,11 +124,26 @@ import "@/assets/css/product.css";
 import NavHeader from "@/components/NavHeader";
 import NavFooter from "@/components/NavFooter";
 import NavBread from "@/components/NavBread";
+import Modal from "@/components/Modal";
 export default {
+  //声明模型数据
+  data(){
+    return{
+      testMdShow:true
+    }
+  },
+  //声明组件
   components: {
     NavHeader,
     NavFooter,
-    NavBread
+    NavBread,
+    Modal
+  },
+  //声明普通方法
+  methods:{
+    closeModal(){
+      this.testMdShow=false
+    }
   }
 };
 </script>
