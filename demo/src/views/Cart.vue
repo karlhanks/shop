@@ -183,6 +183,7 @@ import "@/assets/css/base.css";
 import "@/assets/css/product.css";
 import "@/assets/css/checkout.css";
 import "@/assets/css/login.css";
+import "@/assets/css/header.css";
 //导入组件需要激活
 import NavHeader from "@/components/NavHeader";
 import NavFooter from "@/components/NavFooter";
