@@ -6,7 +6,7 @@
         <NavBread>
           <a href="/">首页</a>
           <span>商品列表</span>
-        </NavBread> 
+        </NavBread>
       </div>
     </div>
     <div class="accessory-result-page accessory-page">
@@ -14,7 +14,12 @@
         <div class="filter-nav">
           <span class="sortby">排序:</span>
           <a href="javascript:void(0)" class="default cur">默认</a>
-          <a href="javascript:void(0)" class="price">
+          <a
+            href="javascript:void(0)"
+            class="price"
+            @click="goodsOrder"
+            v-bind:class="{'sort-up':order}"
+          >
             价格
             <svg class="icon icon-arrow-short">
               <use xlink:href="#icon-arrow-short" />
@@ -28,19 +33,39 @@
             <dl class="filter-price">
               <dt>价格:</dt>
               <dd>
-                <a href="javascript:void(0)">All</a>
+                <a
+                  href="javascript:void(0)"
+                  v-bind:class="{'cur':maxprice=='all'}"
+                  @click="goodsWhere('all','all')"
+                >All</a>
               </dd>
               <dd>
-                <a href="javascript:void(0)">0 - 100</a>
+                <a
+                  href="javascript:void(0)"
+                  v-bind:class="{'cur':maxprice==100}"
+                  @click="goodsWhere(0,100)"
+                >0 - 100</a>
               </dd>
               <dd>
-                <a href="javascript:void(0)">100 - 500</a>
+                <a
+                  href="javascript:void(0)"
+                  v-bind:class="{'cur':maxprice==500}"
+                  @click="goodsWhere(100,500)"
+                >100 - 500</a>
               </dd>
               <dd>
-                <a href="javascript:void(0)">500 - 1000</a>
+                <a
+                  href="javascript:void(0)"
+                  v-bind:class="{'cur':maxprice==1000}"
+                  @click="goodsWhere(500,1000)"
+                >500 - 1000</a>
               </dd>
               <dd>
-                <a href="javascript:void(0)">1000 - 2000</a>
+                <a
+                  href="javascript:void(0)"
+                  v-bind:class="{'cur':maxprice==2000}"
+                  @click="goodsWhere(1000,2000)"
+                >1000 - 2000</a>
               </dd>
             </dl>
           </div>
@@ -49,59 +74,17 @@
           <div class="accessory-list-wrap">
             <div class="accessory-list col-4">
               <ul>
-                <li>
+                <li v-for="(good,index) in goodlist" :key="index">
                   <div class="pic">
                     <a href="#">
-                      <img src="../static/9.jpg" alt />
+                      <img :src="good.img2" alt />
                     </a>
                   </div>
                   <div class="main">
-                    <div class="name">XX</div>
-                    <div class="price">999</div>
+                    <div class="name">{{good.title}}</div>
+                    <div class="price">{{good.price}}</div>
                     <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="pic">
-                    <a href="#">
-                      <img src="../static/3.jpg" alt />
-                    </a>
-                  </div>
-                  <div class="main">
-                    <div class="name">XX</div>
-                    <div class="price">1000</div>
-                    <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="pic">
-                    <a href="#">
-                      <img src="../static/7.jpg" alt />
-                    </a>
-                  </div>
-                  <div class="main">
-                    <div class="name">XX</div>
-                    <div class="price">500</div>
-                    <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="pic">
-                    <a href="#">
-                      <img src="../static/6.jpg" alt />
-                    </a>
-                  </div>
-                  <div class="main">
-                    <div class="name">XX</div>
-                    <div class="price">2499</div>
-                    <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m">加入购物车</a>
+                      <a href="javascript:;" class="btn btn--m" @click="addCart(good.id)">加入购物车</a>
                     </div>
                   </div>
                 </li>
@@ -111,6 +94,28 @@
         </div>
       </div>
     </div>
+    <input type="button" value="加入购物车1" @click="isCartErrorShowFlag = true" />
+
+    <modal v-bind:isMdShow="isCartErrorShowFlag" @close="isCartErrorShowFlag = false">
+      <div slot="message">请先登录，否则无法加入到购物车中!</div>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="isCartErrorShowFlag = false">关闭</a>
+      </div>
+    </modal>
+    <input type="button" value="加入购物车2" @click="isCartOkShowFlag = true" />
+
+    <modal v-bind:isMdShow="isCartOkShowFlag" @close="isCartOkShowFlag = false">
+      <div slot="message">
+        <svg class="icon-status-ok">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok" />
+        </svg>
+        <span>加入购物车成!</span>!
+      </div>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="isCartOkShowFlag = false">继续购物</a>
+        <router-link class="btn btn--m btn--red" href="javascript:;" to="/cart">查看购物车</router-link>
+      </div>
+    </modal>
     <!-- <Modal :isMdShow='testMdShow' @close='closeModal'></Modal> -->
     <NavFooter></NavFooter>
   </div>
@@ -125,12 +130,19 @@ import NavHeader from "@/components/NavHeader";
 import NavFooter from "@/components/NavFooter";
 import NavBread from "@/components/NavBread";
 import Modal from "@/components/Modal";
+import axios from "axios";
 export default {
   //声明模型数据
-  data(){
-    return{
-      testMdShow:true
-    }
+  data() {
+    return {
+      // testMdShow: true,
+      isCartErrorShowFlag: false,
+      isCartOkShowFlag: false,
+      goodlist: [],
+      order: false,
+      minprice: "all",
+      maxprice: "all"
+    };
   },
   //声明组件
   components: {
@@ -140,15 +152,60 @@ export default {
     Modal
   },
   //声明普通方法
-  methods:{
-    closeModal(){
-      this.testMdShow=false
+  methods: {
+    closeModal() {
+      this.testMdShow = false;
+    },
+    goodsOrder() {
+      //排序
+      this.order = !this.order;
+      this.initData();
+    },
+    goodsWhere(minprice, maxprice) {
+      //根据价格筛选
+      this.minprice = minprice;
+      this.maxprice = maxprice;
+      this.initData();
+    },
+    addCart(goodid) {
+      //加入购物车
+      let useid = 1;
+      axios({
+        method:'post',
+        url:'http://118.31.9.103/api/cart/create',
+        data:`userId=${useid}&goodsId=${goodid}`
+      }).then(res=>{
+        if(res.data.meta.state==201){
+                this.isCartOkShowFlag = true;
+        }else{
+          alert(res.data.meta.msg)
+        }
+      }
+      ).catch(error=>{
+        console.log(error)
+      })
+      ;
+    },
+    //初始化数据
+    initData() {
+      let order = this.order ? "asc" : "desc";
+      axios({
+        url: `http://118.31.9.103/api/goods/index?order=${order}&minprice=${this.minprice}&maxprice=${this.maxprice}`,
+        method: "get"
+      })
+        .then(res => {
+          this.goodlist = res.data.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
+  },
+  created() {
+    this.initData();
   }
 };
 </script>
  
 <style scoped >
-/* @import url('../assets/css/base.css');
-@import url('../assets/css/product.css'); */
 </style>
