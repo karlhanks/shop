@@ -90,42 +90,50 @@
               </ul>
             </div>
             <ul class="cart-item-list">
-              <li>
+              <li v-for="(good,index) in goodslist" v-bind:key="index">
                 <div class="cart-tab-1">
-                  <div class="cart-item-check">
-                    <a href="javascipt:;" class="checkbox-btn item-check-btn check">
+                  <div class="cart-item-check" @click="updataCart(good.goods_id,'state')">
+                    <a
+                      href="javascipt:;"
+                      class="checkbox-btn item-check-btn"
+                      :class="{'check':good.state==1}"
+                    >
                       <svg class="icon icon-ok">
                         <use xlink:href="#icon-ok" />
                       </svg>
                     </a>
                   </div>
                   <div class="cart-item-pic">
-                    <img src="../../static/1.jpg" />
+                    <img :src="good.img2" />
                   </div>
                   <div class="cart-item-title">
-                    <div class="item-name">XX</div>
+                    <div class="item-name">{{good.title}}</div>
                   </div>
                 </div>
                 <div class="cart-tab-2">
-                  <div class="item-price">1000</div>
+                  <div class="item-price">{{good.price}}</div>
                 </div>
                 <div class="cart-tab-3">
                   <div class="item-quantity">
                     <div class="select-self select-self-open">
                       <div class="select-self-area">
-                        <a class="input-sub">-</a>
-                        <span class="select-ipt">1</span>
-                        <a class="input-add">+</a>
+                        <a class="input-sub" @click="updataCart(good.goods_id,'-')">-</a>
+                        <span class="select-ipt">{{good.num}}</span>
+                        <a class="input-add" @click="updataCart(good.goods_id,'jia')">+</a>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="cart-tab-4">
-                  <div class="item-price-total">100</div>
+                  <div class="item-price-total">{{good.num*good.price}}</div>
                 </div>
                 <div class="cart-tab-5">
                   <div class="cart-item-opration">
-                    <a href="javascript:;" class="item-edit-btn">
+                    <a
+                      href="javascript:;"
+                      class="item-edit-btn"
+                      @click="updataCart(good.goods_id,'del')"
+                    >
                       <svg class="icon icon-del">
                         <use xlink:href="#icon-del" />
                       </svg>
@@ -153,7 +161,7 @@
             <div class="cart-foot-r">
               <div class="item-total">
                 总价:
-                <span class="total-price">500</span>
+                <span class="total-price">{{totolnum}}</span>
               </div>
               <div class="btn-wrap">
                 <a class="btn btn--red" onclick="location.href='address.html'">结算</a>
@@ -188,11 +196,57 @@ import "@/assets/css/header.css";
 import NavHeader from "@/components/NavHeader";
 import NavFooter from "@/components/NavFooter";
 import NavBread from "@/components/NavBread";
+import axios from "axios";
 export default {
   components: {
     NavHeader,
     NavFooter,
     NavBread
+  },
+  data() {
+    return {
+      goodslist: [],
+      totolnum: 0
+    };
+  },
+  methods: {
+    initData() {
+      axios({
+        method: "post",
+        url: "http://118.31.9.103/api/cart/index",
+        data: "userId=1"
+      })
+        .then(res => {
+          this.goodslist = res.data.data;
+          this.totolnum = 0;
+          for (let i = 0; i < this.goodslist.length; i++) {
+            this.totolnum += this.goodslist[i].num * this.goodslist[i].price;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    updataCart(goodid, a) {
+      axios({
+        method: "post",
+        url: "http://118.31.9.103/api/cart/edit",
+        data: `userId=1&goodsId=${goodid}&state=${a}`
+      })
+        .then(res => {
+          if (res.data.meta.state == 201) {
+            this.initData();
+          } else {
+            alert(res.data.meta.msg);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  },
+  created() {
+    this.initData();
   }
 };
 </script>
