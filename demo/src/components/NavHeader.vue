@@ -56,9 +56,11 @@
         <div class="navbar-right-container" style="display: flex;">
           <div class="navbar-menu-container">
             <!--<a href="/" class="navbar-link">我的账户</a>-->
-            <span class="navbar-link"></span>
-            <a href="javascript:void(0)" class="navbar-link" @click="form.isLoginShowFlag=true">登录</a>
-            <a href="javascript:void(0)" class="navbar-link">退出</a>
+            <span class="navbar-link">{{nickname}}</span>
+            <a href="javascript:void(0)" class="navbar-link" @click="form.isLoginShowFlag=true"
+            v-if="!nickname"
+            >登录</a>
+            <a href="javascript:void(0)" class="navbar-link" v-else @click="loginout">退出</a>
             <div class="navbar-cart-container">
               <span class="navbar-cart-count"></span>
               <a class="navbar-link navbar-cart-link" href="./cart.html">
@@ -77,7 +79,7 @@
         </div>
         <div slot="message">
           <div class="error-wrap">
-            <span class="error error-show" v-show="form.error">{{msg}}</span>
+            <span class="error error-show" v-show="form.error">{{form.error}}</span>
           </div>
           <ul>
             <li class="regi_form_input">
@@ -119,27 +121,50 @@ import NavHeader from "@/components/NavHeader";
 import NavFooter from "@/components/NavFooter";
 import NavBread from "@/components/NavBread";
 import Modal from "@/components/Modal";
+import axios from "axios";
 
 export default {
   //数据模型（M）
   data() {
     return {
-      // testMdShow: true
+      // 本地用户账号信息
+      nickname:localStorage.getItem('useName'),
       //登录遮罩相关数据
       form: {
         username: "",
         password: "",
-        error: true, //错误提示
+        error: '', //错误提示
         isLoginShowFlag: false //是否显示登录遮罩
-      },
-      msg:'请输入账号密码'
+      }
     };
   },
   //定义方法
   methods: {
+    //退出登录
+    loginout(){
+      this.nickname=''
+      localStorage.removeItem('useName')
+      localStorage.removeItem('userId')
+    },
     //登录数据处理
     login() {
-      alert("待完成");
+      this.form.error=''
+      axios({
+        url:'http://118.31.9.103/api/login/login',
+        method:'post',
+        data:`username=${this.form.username}&password=${this.form.password}`
+      }).then(res=>{
+        if(res.data.meta.state==200){
+          //localstorage存储用户信息
+          localStorage.setItem('userId',res.data.data.id)
+          localStorage.setItem('useName',res.data.data.username)
+          //关闭登录框
+          this.form.isLoginShowFlag=false
+          this.nickname=localStorage.getItem('useName')
+        }else{
+          this.form.error=res.data.meta.msg
+        }
+      })
     },
     //关闭遮罩组件
     closeModal() {

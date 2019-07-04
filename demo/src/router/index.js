@@ -31,7 +31,7 @@ export default new Router({
       component: OrderConfirm
     },
     {
-      path: '/orderSuccess',
+      path: '/orderSuccess/:id',
       name: 'OrderSuccess',
       component: OrderSuccess
     }

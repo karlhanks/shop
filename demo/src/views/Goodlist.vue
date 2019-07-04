@@ -94,16 +94,16 @@
         </div>
       </div>
     </div>
-    <input type="button" value="加入购物车1" @click="isCartErrorShowFlag = true" />
-
+    
+<!-- 未登录状态显示的弹框 -->
     <modal v-bind:isMdShow="isCartErrorShowFlag" @close="isCartErrorShowFlag = false">
       <div slot="message">请先登录，否则无法加入到购物车中!</div>
       <div slot="btnGroup">
         <a class="btn btn--m" href="javascript:;" @click="isCartErrorShowFlag = false">关闭</a>
       </div>
     </modal>
-    <input type="button" value="加入购物车2" @click="isCartOkShowFlag = true" />
 
+<!-- 已登录状态显示的成功加入购物车弹框 -->
     <modal v-bind:isMdShow="isCartOkShowFlag" @close="isCartOkShowFlag = false">
       <div slot="message">
         <svg class="icon-status-ok">
@@ -169,7 +169,11 @@ export default {
     },
     addCart(goodid) {
       //加入购物车
-      let useid = 1;
+      let useid = localStorage.getItem('userId');
+      if(!useid){
+        this.isCartErrorShowFlag=true
+        return
+      }
       axios({
         method:'post',
         url:'http://118.31.9.103/api/cart/create',

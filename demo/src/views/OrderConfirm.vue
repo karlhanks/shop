@@ -54,31 +54,31 @@
             </ul>
           </div>
           <ul class="cart-item-list">
-            <li>
+            <li v-for="(cart,index) in cartlist" :key="index">
               <div class="cart-tab-1">
                 <div class="cart-item-pic">
-                  <img src="../../static/1.jpg" alt="">
+                  <img :src="cart.img2" alt="">
                 </div>
                 <div class="cart-item-title">
-                  <div class="item-name">小米6</div>
+                  <div class="item-name">{{cart.title}}</div>
 
                 </div>
               </div>
               <div class="cart-tab-2">
-                <div class="item-price">2499</div>
+                <div class="item-price">{{cart.price}}</div>
               </div>
               <div class="cart-tab-3">
                 <div class="item-quantity">
                   <div class="select-self">
                     <div class="select-self-area">
-                      <span class="select-ipt">×1</span>
+                      <span class="select-ipt">×{{cart.num}}</span>
                     </div>
                   </div>
                   <div class="item-stock item-stock-no">数量</div>
                 </div>
               </div>
               <div class="cart-tab-4">
-                <div class="item-price-total">2499</div>
+                <div class="item-price-total">{{cart.num*cart.price}}</div>
               </div>
             </li>
           </ul>
@@ -91,7 +91,7 @@
           <ul>
             <li class="order-total-price">
               <span>总价</span>
-              <span>1999</span>
+              <span>{{totol}}</span>
             </li>
           </ul>
         </div>
@@ -102,7 +102,7 @@
           <!-- <button class="btn btn--m">Previous</button> -->
         </div>
         <div class="next-btn-wrap">
-          <button class="btn btn--m btn--red" onclick="location.href='orderSuccess.html'">创建订单</button>
+          <button class="btn btn--m btn--red" @click="goNext">创建订单</button>
         </div>
       </div>
     </div>
@@ -114,8 +114,44 @@
 <script>
 import '@/assets/css/base.css'
 import '@/assets/css/checkout.css'
+import axios from 'axios'
 
 export default {
+  data(){
+    return {
+      userid:localStorage.getItem('userId'),
+      cartlist:[],//模型定义列表
+      totol:0//模型定义总价
+    }
+  },
+  created(){
+    this.initData()
+  },
+  methods:{
+    initData(){//初始化请求数据
+      axios({
+        method:'post',
+        url:'http://118.31.9.103/api/cart/index',
+        data:`userId=${this.userid}&isChoose=true`
+      }).then(res=>{
+        console.log(res.data.data)
+        this.cartlist=res.data.data
+        for(let i=0;i<this.cartlist.length;i++){//循环计算总价
+          this.totol+=this.cartlist[i].price*this.cartlist[i].num
+        }
+      })
+    },
+    goNext(){
+      axios({
+        url:'http://118.31.9.103/api/order/create',
+        method:'post',
+        data:'userId='+this.userid
+      }).then(res=>{
+        this.$router.push({path:'/orderSuccess/'+res.data.data})
+      })
+      
+    }
+  }
 }
 </script>
  
