@@ -164,7 +164,7 @@
                 <span class="total-price">{{totolnum}}</span>
               </div>
               <div class="btn-wrap">
-                <a class="btn btn--red" onclick="location.href='address.html'">结算</a>
+                <a class="btn btn--red" @click="goNext">结算</a>
               </div>
             </div>
           </div>
@@ -210,28 +210,39 @@ export default {
     };
   },
   methods: {
+    //点击结算实现跳转
+    goNext(){
+      this.$router.push({path:'/address'})
+    },
+    //初始化获得数据
     initData() {
+      let userId=localStorage.getItem('userId')
       axios({
         method: "post",
         url: "http://118.31.9.103/api/cart/index",
-        data: "userId=1"
+        data: "userId="+userId
       })
         .then(res => {
           this.goodslist = res.data.data;
           this.totolnum = 0;
           for (let i = 0; i < this.goodslist.length; i++) {
+            if(this.goodslist[i].state=='1'){
             this.totolnum += this.goodslist[i].num * this.goodslist[i].price;
+            }
+
           }
         })
         .catch(error => {
           console.log(error);
         });
     },
+    //操作改变数据接口
     updataCart(goodid, a) {
+      let userId=localStorage.getItem('userId')
       axios({
         method: "post",
         url: "http://118.31.9.103/api/cart/edit",
-        data: `userId=1&goodsId=${goodid}&state=${a}`
+        data: `userId=${userId}&goodsId=${goodid}&state=${a}`
       })
         .then(res => {
           if (res.data.meta.state == 201) {

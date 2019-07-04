@@ -101,11 +101,11 @@
           <div class="addr-list-wrap">
             <div class="addr-list">
               <ul>
-                <li>
+                <li v-for="(add,index) in addlist" :key="index">
                   <dl>
-                    <dt>XXX</dt>
-                    <dd class="address">朝阳公园</dd>
-                    <dd class="tel">10000000000</dd>
+                    <dt>{{add.nickname}}</dt>
+                    <dd class="address">{{add.address}}</dd>
+                    <dd class="tel">{{add.tel}}</dd>
                   </dl>
                   <div class="addr-opration addr-del">
                     <a href="javascript:;" class="addr-del-btn">
@@ -119,7 +119,7 @@
                       <i>设置</i>
                     </a>
                   </div>
-                  <div class="addr-opration addr-default">默认收货地址</div>
+                  <div class="addr-opration addr-default" v-show="add.default=='1'">默认收货地址</div>
                 </li>
                 <li class="addr-new">
                   <div class="add-new-inner">
@@ -146,7 +146,8 @@
           </div>
 
           <div class="next-btn-wrap">
-            <a class="btn btn--m btn--red" onclick="location.href='orderConfirm.html'">下一步</a>
+            
+            <a class="btn btn--m btn--red" href="javascript:;" @click="goNext">下一步</a>
           </div>
         </div>
       </div>
@@ -157,9 +158,37 @@
 <script>
 import '@/assets/css/base.css'
 import '@/assets/css/checkout.css'
+import axios from 'axios'
 
 export default {
-
+  data(){
+    return {
+      userId:'',
+      addlist:[]
+    }
+  },
+  created(){
+    this.initData()
+  },
+  methods:{
+    //下一步跳转页面
+    goNext(){
+      this.$router.push({path:'/orderconfirm'})
+    },
+    initData(){//初始化请求获取接口
+      this.userId=localStorage.getItem('userId')
+      axios({
+        url:'http://118.31.9.103/api/address/index',
+        data:`userId=${this.userId}`,
+        method:'post'
+      }).then(res=>{
+        console.log(res)
+        this.addlist=res.data.data
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+  }
 };
 </script>
  

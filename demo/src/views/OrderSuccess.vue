@@ -19,8 +19,8 @@
       <div class="order-create-main">
         <h3>祝贺你! <br>你的订单创建成功!</h3>
         <p>
-          <span>订单编号：100000001</span>
-          <span>订单总价：1000</span>
+          <span>{{orderinfo.order_no}}</span>
+          <span>{{orderinfo.total_price}}</span>
         </p>
         <div class="order-create-btn-wrap">
           <div class="btn-l-wrap">
@@ -40,7 +40,31 @@
 <script>
 import '@/assets/css/base.css'
 import '@/assets/css/checkout.css'
+import axios from 'axios'
 export default {
+  data(){
+    return {
+      userId:'',
+      orderinfo:{}
+    }
+  },
+  methods:{
+    initData(){
+      let orderid=this.$route.params.id
+      this.userId=localStorage.getItem('userId')
+      axios({
+        url:'http://118.31.9.103/api/order/detail',
+        data:`userId=${this.userId}&orderId=${orderid}`,
+        method:'post'
+      }).then(res=>{
+        console.log(res)
+        this.orderinfo=res.data.data
+      })
+    }
+  },
+  created(){
+    this.initData()
+  }
 }
 </script>
  
