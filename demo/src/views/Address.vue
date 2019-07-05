@@ -101,7 +101,7 @@
           <div class="addr-list-wrap">
             <div class="addr-list">
               <ul>
-                <li v-for="(add,index) in addlist" :key="index">
+                <li v-for="(add,index) in addlist" :key="index" @click="updataaddress(add.id)">
                   <dl>
                     <dt>{{add.nickname}}</dt>
                     <dd class="address">{{add.address}}</dd>
@@ -186,6 +186,20 @@ export default {
         this.addlist=res.data.data
       }).catch(error=>{
         console.log(error)
+      })
+    },
+    updataaddress(addressId){
+      axios({
+        url:'http://118.31.9.103/api/address/defaultAddress',
+        method:'post',
+        data:`userId=${this.userId}&addressId=${addressId}`
+      }).then(res=>{
+        if(res.data.meta.state==201){
+          alert('修改成功')
+          this.initData()
+        }else{
+          alert(res.data.meta.msg)
+        }
       })
     }
   }

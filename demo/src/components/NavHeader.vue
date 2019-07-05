@@ -156,7 +156,7 @@ export default {
       }).then(res=>{
         if(res.data.meta.state==200){
           //localstorage存储用户信息
-          localStorage.setItem('userId',res.data.data.id)
+          localStorage.setItem('userId',res.data.data.id) 
           localStorage.setItem('useName',res.data.data.username)
           //关闭登录框
           this.form.isLoginShowFlag=false
