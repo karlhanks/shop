@@ -73,7 +73,7 @@
           <!-- search result accessories list -->
           <div class="accessory-list-wrap">
             <div class="accessory-list col-4">
-              <ul>
+              <ul class="content">
                 <li v-for="(good,index) in goodlist" :key="index">
                   <div class="pic">
                     <a href="#">
@@ -88,6 +88,7 @@
                     </div>
                   </div>
                 </li>
+                <li ref='more' class="more" >查看更多</li>
               </ul>
             </div>
           </div>
@@ -120,7 +121,7 @@
     <NavFooter></NavFooter>
   </div>
 </template>
- 
+<script src="https://unpkg.com/better-scroll/dist/bscroll.min.js"></script>
 <script>
 //导入CSS
 import "@/assets/css/base.css";
@@ -131,6 +132,7 @@ import NavFooter from "@/components/NavFooter";
 import NavBread from "@/components/NavBread";
 import Modal from "@/components/Modal";
 import axios from "axios";
+import BScroll from 'better-scroll'
 export default {
   //声明模型数据
   data() {
@@ -141,7 +143,8 @@ export default {
       goodlist: [],
       order: false,
       minprice: "all",
-      maxprice: "all"
+      maxprice: "all",
+      pagenum:1,
     };
   },
   //声明组件
@@ -191,14 +194,21 @@ export default {
       ;
     },
     //初始化数据
-    initData() {
+    initData(scroll) {
       let order = this.order ? "asc" : "desc";
       axios({
-        url: `http://118.31.9.103/api/goods/index?order=${order}&minprice=${this.minprice}&maxprice=${this.maxprice}`,
+        url: `http://118.31.9.103/api/goods/index?order=${order}&minprice=${this.minprice}&maxprice=${this.maxprice}&pagesize=8&pagenum=${this.pagenum}`,
         method: "get"
       })
         .then(res => {
-          this.goodlist = res.data.data;
+          if(scroll){
+            scroll.finishPullUp()
+            let tmp = this.goodlist.concat(res.data.data)
+            this.goodlist=tmp
+            this.$$refs.more.innerHTML='查看更多'
+          }else{
+            this.goodlist= res.data.data
+          }
         })
         .catch(error => {
           console.log(error);
@@ -207,9 +217,31 @@ export default {
   },
   created() {
     this.initData();
-  }
+  },
+  mounted(){
+    this.$nextTick(()=>{
+      let wrapper=document.querySelector('.accessory-list')
+      let scroll= new BScroll(wrapper,{
+        pullUpLoad:{
+          threshold:50
+        }
+    })
+    scroll.on('pullingUp',()=>{
+      this.$refs.more.innerHTML='加载中。。。'
+      this.pagenum+=1
+      this.initData(scroll)
+    })
+    })
+}
 };
 </script>
  
 <style scoped >
+.more{
+  width: 100%;height: 30px;text-align: center;background: #ccc
+}
+.accessory-list{
+  height:564px;
+  overflow: hidden;
+}
 </style>
