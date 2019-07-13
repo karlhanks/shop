@@ -178,7 +178,7 @@ export default {
     initData(){//初始化请求获取接口
       this.userId=localStorage.getItem('userId')
       axios({
-        url:'http://118.31.9.103/api/address/index',
+        url:'http://49.234.95.82:8091/index.php/api/address/index',
         data:`userId=${this.userId}`,
         method:'post'
       }).then(res=>{
@@ -190,7 +190,7 @@ export default {
     },
     updataaddress(addressId){
       axios({
-        url:'http://118.31.9.103/api/address/defaultAddress',
+        url:'http://49.234.95.82:8091/index.php/api/address/defaultAddress',
         method:'post',
         data:`userId=${this.userId}&addressId=${addressId}`
       }).then(res=>{

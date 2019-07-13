@@ -179,7 +179,7 @@ export default {
       }
       axios({
         method:'post',
-        url:'http://118.31.9.103/api/cart/create',
+        url:'http://49.234.95.82:8091/index.php/api/cart/create',
         data:`userId=${useid}&goodsId=${goodid}`
       }).then(res=>{
         if(res.data.meta.state==201){
@@ -197,7 +197,7 @@ export default {
     initData(scroll) {
       let order = this.order ? "asc" : "desc";
       axios({
-        url: `http://118.31.9.103/api/goods/index?order=${order}&minprice=${this.minprice}&maxprice=${this.maxprice}&pagesize=8&pagenum=${this.pagenum}`,
+        url: `http://49.234.95.82:8091/index.php/api/goods/index?order=${order}&minprice=${this.minprice}&maxprice=${this.maxprice}&pagesize=8&pagenum=${this.pagenum}`,
         method: "get"
       })
         .then(res => {

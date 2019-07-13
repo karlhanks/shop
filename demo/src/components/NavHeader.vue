@@ -150,7 +150,7 @@ export default {
     login() {
       this.form.error=''
       axios({
-        url:'http://118.31.9.103/api/login/login',
+        url:'http://49.234.95.82:8091/index.php/api/login/login',
         method:'post',
         data:`username=${this.form.username}&password=${this.form.password}`
       }).then(res=>{

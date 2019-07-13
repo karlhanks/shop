@@ -219,7 +219,7 @@ export default {
       let userId=localStorage.getItem('userId')
       axios({
         method: "post",
-        url: "http://118.31.9.103/api/cart/index",
+        url: "http://49.234.95.82:8091/index.php/api/cart/index",
         data: "userId="+userId
       })
         .then(res => {
@@ -241,7 +241,7 @@ export default {
       let userId=localStorage.getItem('userId')
       axios({
         method: "post",
-        url: "http://118.31.9.103/api/cart/edit",
+        url: "http://49.234.95.82:8091/index.php/api/cart/edit",
         data: `userId=${userId}&goodsId=${goodid}&state=${a}`
       })
         .then(res => {

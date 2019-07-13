@@ -131,7 +131,7 @@ export default {
     initData(){//初始化请求数据
       axios({
         method:'post',
-        url:'http://118.31.9.103/api/cart/index',
+        url:'http://49.234.95.82:8091/index.php/api/cart/index',
         data:`userId=${this.userid}&isChoose=true`
       }).then(res=>{
         console.log(res.data.data)
@@ -143,7 +143,7 @@ export default {
     },
     goNext(){
       axios({
-        url:'http://118.31.9.103/api/order/create',
+        url:'http://49.234.95.82:8091/index.php/api/order/create',
         method:'post',
         data:'userId='+this.userid
       }).then(res=>{

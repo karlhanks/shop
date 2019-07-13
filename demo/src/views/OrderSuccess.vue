@@ -53,7 +53,7 @@ export default {
       let orderid=this.$route.params.id
       this.userId=localStorage.getItem('userId')
       axios({
-        url:'http://118.31.9.103/api/order/detail',
+        url:'http://49.234.95.82:8091/index.php/api/order/detail',
         data:`userId=${this.userId}&orderId=${orderid}`,
         method:'post'
       }).then(res=>{
